@@ -27,7 +27,7 @@ async function run(){
 		const database = client.db("pipi");
 		const itemsCollection = database.collection('items');
 		const usersCollection = database.collection('users');
-		// const reviewsCollection = database.collection('reviews');
+		const reviewsCollection = database.collection('reviews');
 		const ordersCollection = database.collection('orders');
 
 
@@ -50,6 +50,7 @@ async function run(){
 		})
 
 		// post api(orders)
+
 		app.post('/orders', async(req, res) =>{
 			const order = req.body;
 			const result = await ordersCollection.insertOne(order);
@@ -68,7 +69,7 @@ async function run(){
 
 		// payment
 
-		app.post('/create-payment-intent', async (req, res) =>{
+		app.post('/create-payment-intent', async (req, res) => {
 			const paymentInfo = req.body;
 			const amount = paymentInfo.price * 100;
 			const paymentIntent = await stripe.paymentIntents.create({
@@ -115,6 +116,15 @@ async function run(){
 			const order = await cursor.toArray();
 			res.send(order);
 		})
+
+		app.get('/dashusers', async(req, res) =>{			
+			const email = req.query.email;
+			const query = {email:email}
+			const cursor = usersCollection.find(query);
+			const user = await cursor.toArray();
+			res.send(user);
+		})
+
 
 
 		app.get('/reviews', async(req, res) =>{
